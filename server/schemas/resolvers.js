@@ -8,9 +8,10 @@ const resolvers = {
         //get the user without their password and populate their saved books
         me: async (parent, args, context) => {
             if (context.user) {
+                console.log(context.user)
                 const userData = await User.findOne({ _id: context.user._id })
                     .select('-__v -password')
-                    .popolate('savedBooks');
+                    .populate('savedBooks');
                 return userData;
             }
             throw new AuthenticationError('Not logged in');
@@ -57,7 +58,18 @@ const resolvers = {
             // if not logged in/unathenticated user, throw error
             throw new AuthenticationError('Please log in to save this book.')
         },
-        //TODO: write the removeBook mutation
+        //TODO: find a user based on the context, after finding the user we pull from the user's saved books, pull the args.bookId
+        removeBook: async (parent, args, context) => {
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: context.user._id },
+                { $pull: { savedBooks: { bookId: args.bookId } } },
+                { new: true }
+              );
+              if (!updatedUser) {
+                throw new AuthenticationError("Couldn't find user with this id!");
+              }
+              return (updatedUser);
+        }
     }
 };
 
