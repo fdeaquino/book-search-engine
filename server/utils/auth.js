@@ -15,6 +15,7 @@ module.exports = {
       token = token.split(' ').pop().trim();
     }
 
+    console.log(token)
     if (!token) {
       return req;
     }
