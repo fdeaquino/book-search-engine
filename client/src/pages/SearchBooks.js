@@ -72,7 +72,7 @@ const SearchBooks = () => {
 
     try {
       // const response = await saveBook(bookToSave, token);
-      await saveBook([{ 
+      await saveBook({ 
         variables: {
           input: {
             "bookId": bookToSave.bookId,
@@ -83,7 +83,7 @@ const SearchBooks = () => {
             "link": bookToSave.link
           }
         }
-      }])
+      })
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
