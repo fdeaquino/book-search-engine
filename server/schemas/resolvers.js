@@ -10,8 +10,9 @@ const resolvers = {
             if (context.user) {
                 console.log(context.user)
                 const userData = await User.findOne({ _id: context.user._id })
-                    .select('-__v -password')
-                    .populate('savedBooks');
+                    .select('-__v -password');
+                    // .populate('savedBooks');
+                    console.log(userData);
                 return userData;
             }
             throw new AuthenticationError('Not logged in');
@@ -47,12 +48,14 @@ const resolvers = {
         // similar to addFriend in deep-thoughts project
         saveBook: async (parent, args, context) => {
             if (context.user) {
+                console.log(args)
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
                     //prevent duplicates, add book to savedBooks, will populate in me query
-                    { $addToSet: { savedBooks: {bookId: args.bookId } } },
+                    { $addToSet: { savedBooks: args.input  } },
                     { new: true }
                 );
+                console.log(updatedUser);
                 return updatedUser;
             }
             // if not logged in/unathenticated user, throw error
